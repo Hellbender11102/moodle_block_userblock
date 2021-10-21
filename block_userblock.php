@@ -30,22 +30,61 @@ class block_userblock extends block_base
         $this->title = get_string('pluginname', 'block_userblock');
     }
 
+    /**
+     * Sets the flag for config file
+     * @return bool
+     */
+    function has_config()
+    {
+        return true;
+    }
 
+    /**
+     * Displays all users
+     * @return stdClass|stdObject|null
+     * @throws coding_exception
+     * @throws dml_exception
+     */
     function get_content()
     {
-        global $DB;
+        global $DB; //get db global connection
 
         if ($this->content !== NULL) {
             return $this->content;
         }
 
+        $content =
+
         $users = $DB->get_records('user');
-        foreach ($users as $user) {
-            $userString .= $user->id . ' ' . $user->firstname . ' ' . $user->lastname . '<br>';
-        }
+
+        $showcourses = get_config('block_userblock', 'showcourses');
+
+        //if user settings are switched
+        if ($showcourses) {
+            foreach ($users as $user) {
+                // load names and courses
+                $userCourses = enrol_get_all_users_courses($user->id);
+                $courseTable = '<ul>';
+                foreach ($userCourses as $userCourse) {
+                    $courseTable .= '<li> ' .get_string('userblock_courid','block_userblock')
+                        .' ' . $userCourse->id . '<b>'
+                        .get_string('userblock_coursename' ,'block_userblock')
+                        . ' '. $userCourse->fullname . '</li>';
+                }
+                $courseTable .= '</ul>';
+                $content .= $user->firstname . ' ' . $user->lastname . $courseTable
+                    . '<br>';
+            }
+        } else
+            // load names
+            foreach ($users as $user) {
+                $content .= $user->firstname . ' ' . $user->lastname . '<br>';
+            }
+
+
         $this->content = new stdClass();
-        $this->content->text = $userString;
-        $this->content->footer = 'System known user count: ' . sizeof($users);
+        $this->content->text = $content;
+        $this->content->footer = get_string('userblock_footer','block_userblock').' ' . sizeof($users);
 
         return $this->content;
     }
