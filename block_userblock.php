@@ -22,21 +22,30 @@
  * @auther     schindlerl
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class block_userblock extends block_base
+{
 
-class block_userblock extends block_base {
-
-    function init() {
+    function init()
+    {
         $this->title = get_string('pluginname', 'block_userblock');
     }
 
-    function get_content() {
+
+    function get_content()
+    {
+        global $DB;
 
         if ($this->content !== NULL) {
             return $this->content;
         }
+
+        $users = $DB->get_records('user');
+        foreach ($users as $user) {
+            $userString .= $user->id . ' ' . $user->firstname . ' ' . $user->lastname . '<br>';
+        }
         $this->content = new stdClass();
-        $this->content->text= 'text';
-        $this->content->footer='footer';
+        $this->content->text = $userString;
+        $this->content->footer = 'System known user count: ' . sizeof($users);
 
         return $this->content;
     }
