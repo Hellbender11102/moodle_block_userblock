@@ -53,12 +53,10 @@ class block_userblock extends block_base
             return $this->content;
         }
 
-        $content =
-
         $users = $DB->get_records('user');
 
         $showcourses = get_config('block_userblock', 'showcourses');
-
+        $content="";
         //if user settings are switched
         if ($showcourses) {
             foreach ($users as $user) {
@@ -72,8 +70,7 @@ class block_userblock extends block_base
                         . ' '. $userCourse->fullname . '</li>';
                 }
                 $courseTable .= '</ul>';
-                $content .= $user->firstname . ' ' . $user->lastname . $courseTable
-                    . '<br>';
+                $content .= $user->firstname . ' ' . $user->lastname . $courseTable . '<br>';
             }
         } else
             // load names
