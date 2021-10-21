@@ -67,7 +67,7 @@ class block_userblock extends block_base
                 $courseTable = '<ul>';
                 foreach ($userCourses as $userCourse) {
                     $courseTable .= '<li> ' .get_string('userblock_courid','block_userblock')
-                        .' ' . $userCourse->id . '<b>'
+                        .' ' . $userCourse->id . '<br>'
                         .get_string('userblock_coursename' ,'block_userblock')
                         . ' '. $userCourse->fullname . '</li>';
                 }
